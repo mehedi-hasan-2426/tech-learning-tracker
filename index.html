@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Learning Tracker - Your Weekly Progress Journal</title>
+    <meta name="description" content="Track your tech learning progress, save articles, and monitor weekly tech news - all stored locally in your browser.">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">📚</span>
+                    <h1>Tech Learning Tracker</h1>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Topics Learned</span>
+                        <span class="stat-value" id="topicsCompleted">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Current Streak</span>
+                        <span class="stat-value" id="currentStreak">0 days</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <button class="action-btn primary" onclick="app.openAddTopicModal()">
+                    <span>➕</span> Add Learning Topic
+                </button>
+                <button class="action-btn secondary" onclick="app.openAddNewsModal()">
+                    <span>📰</span> Add News Article
+                </button>
+                <button class="action-btn" onclick="app.exportData()">
+                    <span>💾</span> Export Data
+                </button>
+                <button class="action-btn" onclick="app.importData()">
+                    <span>📥</span> Import Data
+                </button>
+            </section>
+
+            <!-- Filter Tabs -->
+            <section class="filter-tabs">
+                <button class="tab-btn active" onclick="app.setFilter('all')" data-filter="all">
+                    All Items
+                </button>
+                <button class="tab-btn" onclick="app.setFilter('learning')" data-filter="learning">
+                    🎯 Learning Topics
+                </button>
+                <button class="tab-btn" onclick="app.setFilter('news')" data-filter="news">
+                    📰 News & Articles
+                </button>
+                <button class="tab-btn" onclick="app.setFilter('completed')" data-filter="completed">
+                    ✅ Completed
+                </button>
+            </section>
+
+            <!-- Search Bar -->
+            <section class="search-section">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="🔍 Search topics, news, or notes..."
+                    oninput="app.handleSearch(this.value)"
+                >
+            </section>
+
+            <!-- Learning Topics Section -->
+            <section class="learning-section">
+                <h2 class="section-title">
+                    <span class="title-icon">🎯</span>
+                    Your Learning Journey
+                </h2>
+                <div id="learningTopics" class="topics-grid">
+                    <!-- Topics will be rendered here -->
+                </div>
+            </section>
+
+            <!-- News & Articles Section -->
+            <section class="news-section">
+                <h2 class="section-title">
+                    <span class="title-icon">📰</span>
+                    Tech News & Articles
+                </h2>
+                <div id="newsArticles" class="news-grid">
+                    <!-- News will be rendered here -->
+                </div>
+            </section>
+
+            <!-- Weekly Summary -->
+            <section class="weekly-summary">
+                <h2 class="section-title">
+                    <span class="title-icon">📊</span>
+                    Weekly Summary
+                </h2>
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="summary-value" id="weeklyTopics">0</div>
+                        <div class="summary-label">Topics This Week</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" id="weeklyNews">0</div>
+                        <div class="summary-label">Articles Saved</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" id="weeklyHours">0h</div>
+                        <div class="summary-label">Learning Time</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" id="totalProgress">0%</div>
+                        <div class="summary-label">Overall Progress</div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Add Topic Modal -->
+    <div id="addTopicModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Learning Topic</h3>
+                <button class="close-btn" onclick="app.closeModal('addTopicModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="topicTitle">Topic Title</label>
+                    <input type="text" id="topicTitle" placeholder="e.g., React Hooks, Docker Basics">
+                </div>
+                <div class="form-group">
+                    <label for="topicCategory">Category</label>
+                    <select id="topicCategory">
+                        <option value="frontend">Frontend</option>
+                        <option value="backend">Backend</option>
+                        <option value="devops">DevOps</option>
+                        <option value="mobile">Mobile</option>
+                        <option value="ai-ml">AI/ML</option>
+                        <option value="data">Data Science</option>
+                        <option value="security">Security</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="topicNotes">Notes / Resources</label>
+                    <textarea id="topicNotes" rows="4" placeholder="Add your notes, links, or resources..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="topicHours">Estimated Hours</label>
+                    <input type="number" id="topicHours" min="0" step="0.5" value="1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeModal('addTopicModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="app.addTopic()">Add Topic</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add News Modal -->
+    <div id="addNewsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add News Article</h3>
+                <button class="close-btn" onclick="app.closeModal('addNewsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newsTitle">Article Title</label>
+                    <input type="text" id="newsTitle" placeholder="e.g., New React 19 Features">
+                </div>
+                <div class="form-group">
+                    <label for="newsUrl">URL (Optional)</label>
+                    <input type="url" id="newsUrl" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label for="newsSource">Source</label>
+                    <input type="text" id="newsSource" placeholder="e.g., Dev.to, Medium, TechCrunch">
+                </div>
+                <div class="form-group">
+                    <label for="newsTags">Tags</label>
+                    <input type="text" id="newsTags" placeholder="e.g., react, javascript, frontend">
+                </div>
+                <div class="form-group">
+                    <label for="newsNotes">Summary / Notes</label>
+                    <textarea id="newsNotes" rows="4" placeholder="Key takeaways from this article..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeModal('addNewsModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="app.addNews()">Add Article</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <p>💾 All data is stored locally in your browser - completely free and private!</p>
+            <p class="footer-note">Last updated: <span id="lastUpdate">Never</span></p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
