@@ -220,4 +220,12 @@ Built for developers, by developers. Keep learning! 🚀
 
 Open an issue on GitHub or fork and customize for your needs!
 
+## Dependency updates
+
+[Renovate](renovate.json) watches supported dependency manifests and GitHub Actions
+after its [GitHub App](https://github.com/apps/renovate) is installed for this repo.
+Routine updates are grouped weekly, with a three-day release-age delay;
+vulnerability PRs bypass both restrictions. All PRs need manual review and passing
+checks; major updates first require Dependency Dashboard approval.
+
 **Happy Learning!** 📚✨
